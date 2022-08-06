@@ -6,12 +6,26 @@
     "start": "next start"
   },
   "dependencies": {
+    "@octokit/graphql": "^5.0.0",
+    "@radix-ui/colors": "^0.1.8",
+    "@radix-ui/react-icons": "^1.1.1",
+    "@radix-ui/react-popover": "^1.0.0",
+    "@radix-ui/react-scroll-area": "^1.0.0",
+    "@radix-ui/react-slider": "^1.0.0",
+    "@react-three/drei": "^9.17.3",
+    "@react-three/fiber": "^8.2.1",
     "@stitches/react": "1.2.8",
+    "framer-motion": "^6.5.1",
     "next": "latest",
+    "next-themes": "^0.2.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-markdown": "^8.0.3",
+    "three": "^0.142.0",
+    "zustand": "^4.0.0-rc.4"
   },
   "devDependencies": {
+    "@octokit/graphql-schema": "^10.74.2",
     "@types/node": "^18.0.6",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
