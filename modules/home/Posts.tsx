@@ -1,5 +1,11 @@
 import { forwardRef, useState } from "react";
-import { BookmarkIcon, Cross1Icon, Link2Icon } from "@radix-ui/react-icons";
+import {
+  BookmarkIcon,
+  Cross1Icon,
+  Link2Icon,
+  EnterFullScreenIcon,
+  ExitFullScreenIcon,
+} from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 
 import { styled } from "stitches.config";
@@ -11,15 +17,16 @@ import type { PostDisplay } from "modules/posts/types";
 
 import * as Popover from "common/ui/overlay/Popover/Popover";
 import * as ScrollArea from "common/ui/overlay/ScrollArea/ScrollArea";
+import {useRouter} from "next/router";
 
 export type PostsProps = {
   posts: PostDisplay[];
 };
 
-export const Posts = forwardRef<HTMLDivElement>(
+export const Posts = forwardRef<HTMLElement>(
   ({ posts }: PostsProps, ref) => {
-    const [openPost, setOpenPost] = useState(
-      posts.map(({ id }: PostDisplay) => ({ [id]: false }))
+    const [openPost, setOpenPost] = useState<Record<number, boolean>>(
+      posts.reduce((prev, curr) => ({ ...prev, [curr.id]: false }), {})
     );
 
     const onPostOpen = ({ id }: { id: number }) => {
@@ -38,7 +45,7 @@ export const Posts = forwardRef<HTMLDivElement>(
           </StyledIconButton>
         </Popover.Trigger>
         <StyledContent>
-          {posts.map((p: Post) => (
+          {posts.map((p: PostDisplay) => (
             <StyledPostItem
               key={`item-${p.id}`}
               onClick={() => onPostOpen({ id: p.id })}
@@ -48,13 +55,13 @@ export const Posts = forwardRef<HTMLDivElement>(
           ))}
         </StyledContent>
         {posts.map(
-          (p: Post) =>
+          (p: PostDisplay) =>
             Boolean(openPost[p.id]) && (
               <PostContent
                 key={`post-${p.id}`}
-                ref={ref}
                 post={p}
                 onClose={() => onPostClose({ id: p.id })}
+                ref={ref}
               />
             )
         )}
@@ -70,12 +77,26 @@ type PostContentProps = {
 
 const PostContent = forwardRef<HTMLDivElement>(
   ({ onClose, post }: PostContentProps, ref) => {
-    const onLinkClick = () => {
+		const router = useRouter()
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    const onToggleFullscreen = () => {
+      setIsFullscreen(!isFullscreen);
       console.log({ post });
     };
 
+    const onLinkClick = () => {
+			router.push(`/post/${post.id}`)
+    };
+
     return (
-      <StyledPostBorder drag dragConstraints={ref}>
+      <StyledPostBorder
+        as={isFullscreen ? "div" : motion.div}
+        drag={!isFullscreen}
+        style={isFullscreen ? fullscreenCss : normalScreenCss}
+        dragMomentum={false}
+        dragConstraints={ref}
+      >
         <StyledPostHeader>
           <StyledPostTitle b size="6">
             {post.title}
@@ -86,15 +107,23 @@ const PostContent = forwardRef<HTMLDivElement>(
               <Link2Icon />
             </IconButton>
 
+            <IconButton onClick={onToggleFullscreen}>
+              {isFullscreen ? <ExitFullScreenIcon /> : <EnterFullScreenIcon />}
+            </IconButton>
+
             <IconButton onClick={onClose}>
               <Cross1Icon />
             </IconButton>
           </Box>
         </StyledPostHeader>
-        <ScrollArea.Root css={{ width: "70ch", height: "80vh" }}>
+        <ScrollArea.Root
+          style={isFullscreen ? fullscreenCssScroll : normalScreenCssScroll}
+        >
           <ScrollArea.Viewport>
             <StyledPost>
-              <PostMarkdown>{post.body}</PostMarkdown>
+              <Box css={{ mx: "auto", maw: "70em" }}>
+                <PostMarkdown content={post.body} />
+              </Box>
             </StyledPost>
           </ScrollArea.Viewport>
           <ScrollArea.Scrollbar orientation="vertical">
@@ -107,6 +136,33 @@ const PostContent = forwardRef<HTMLDivElement>(
   }
 );
 
+const fullscreenCss = {
+  width: "calc(100vw - 2em)",
+  maxWidth: "calc(100vw - 2em)",
+  height: "calc(100vh - 2em)",
+  maxHeight: "calc(100vh - 2em)",
+  position: "fixed",
+  top: "1em",
+  left: "1em",
+  transform: "none",
+};
+
+const normalScreenCss = {
+  left: "calc(50% - 35ch)",
+  top: "calc(50% - 10vh)",
+};
+
+const fullscreenCssScroll = {
+  width: "calc(100vw - 2em - 4px)",
+  maxWidth: "calc(100vw - 2em - 4px)",
+  height: "calc(100vh - 2em - 3em)",
+  maxHeight: "calc(100vh - 2em - 3em)",
+};
+
+const normalScreenCssScroll = {
+  width: "calc(70ch - 4px)",
+  height: "calc(80vh - 3em)",
+};
 const StyledPostTitle = styled(Text, {
   background: "linear-gradient(120deg, $plum10, $gold11)",
   backgroundClip: "text",
@@ -119,8 +175,8 @@ const StyledPostHeader = styled(Box, {
   d: "flex",
   ai: "center",
   jc: "space-between",
-	py: "$2", 
-	px: "$1", 
+  py: "$2",
+  px: "$1",
   w: "100%",
 });
 
@@ -142,7 +198,7 @@ const StyledPostBorder = styled(motion.div, {
   zIndex: "1",
   br: "$3",
   left: "calc(50% - 35ch)",
-  top: "50%",
+  top: "10vh",
   maw: "70ch",
   mah: "80vh",
   h: "fit-content",

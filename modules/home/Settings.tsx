@@ -5,7 +5,7 @@ import { IconButton, Box, Text, Slider } from "common/ui";
 import * as Popover from "common/ui/overlay/Popover/Popover";
 import { useCanvasStore } from "modules/home/store";
 
-import { StyledIconButton, StyledContent } from './common'
+import { StyledIconButton, StyledContent } from "./common";
 
 export const Settings = () => {
   return (
@@ -44,22 +44,24 @@ const ItemZoom = () => {
   );
 };
 
-const ItemDarkMode = () => {
+const ItemDarkMode = () => (
+  <>
+    <Text size="2" b>
+      Theme
+    </Text>
+    <IconButtonDarkMode />
+  </>
+);
+
+export const IconButtonDarkMode = () => {
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
-
   return (
-    <>
-      <Text size="2" b>
-        Theme
-      </Text>
-      <IconButton onClick={toggleTheme}>
-        {theme === "light" ? <MoonIcon /> : <SunIcon />}
-      </IconButton>
-    </>
+    <IconButton onClick={toggleTheme}>
+      {theme === "light" ? <MoonIcon /> : <SunIcon />}
+    </IconButton>
   );
 };
-
 
 const StyledCard = styled("div", {
   bc: "$slate1",

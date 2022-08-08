@@ -1,7 +1,7 @@
 export type PostDisplay = {
-  body: string;
-  createAt: string;
-  labels: string[];
-  id: number;
-  title: string;
+  body?: string;
+  createdAt?: string;
+  labels?: string[];
+  id?: number;
+  title?: string;
 };

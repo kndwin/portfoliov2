@@ -3,12 +3,14 @@ import ReactMarkdown from "react-markdown";
 import { Box, Text } from "common/ui";
 import { styled } from "stitches.config";
 
-export type PostMarkdownProps = {};
+export type PostMarkdownProps = {
+  content: string;
+};
 
 export const PostMarkdown = (props: PostMarkdownProps) => {
   return (
     <ReactMarkdown
-      children={props.children}
+      children={props.content}
       components={{
         h1: (node) => (
           <Text size="7" css={{ fw: "bold" }}>
@@ -40,7 +42,11 @@ export const PostMarkdown = (props: PostMarkdownProps) => {
             {node.children}
           </Text>
         ),
-				p: (node) => <Text size="4" css={{ lh: "1.1em"}}>{node.children}</Text>,
+        p: (node) => (
+          <Text size="4" css={{ lh: "1.1em" }}>
+            {node.children}
+          </Text>
+        ),
         li: (node) => (
           <Text as="li" size="2" css={{ d: "list-item" }}>
             {node.children}
@@ -69,4 +75,3 @@ const StyledImage = styled("img", {
   border: "2px solid $slate3",
   br: "$3",
 });
-

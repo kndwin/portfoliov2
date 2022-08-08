@@ -1,6 +1,6 @@
 import { graphql } from "@octokit/graphql";
 import { Repository } from "@octokit/graphql-schema";
-import type { PostDisplay } from './types'
+import type { PostDisplay } from "./types";
 
 const request = graphql.defaults({
   headers: {
@@ -28,23 +28,24 @@ export const getPosts = async () => {
 			}
     }
   }
-`
-  );
-	const postDisplays: PostDisplay[] = data.repository.issues.nodes.map(issue => ({
-		body: issue.body,
-		createdAt: issue.createdAt,
-		id: issue.number,
-		title: issue.title,
-		labels: issue.labels.edges.map(label => label.node.name)
-	}))
+`);
+  const postDisplays: PostDisplay[] =
+    data?.repository?.issues?.nodes?.map((issue) => ({
+      body: issue?.body,
+      createdAt: issue?.createdAt,
+      id: issue?.number,
+      title: issue?.title,
+      labels:
+        issue?.labels?.edges?.map((label) => label?.node?.name as string) ?? [],
+    })) ?? [];
 
-  return postDisplays; 
+  return postDisplays;
 };
 
 export const getPost = async (number: number) => {
   const data = await request<{ repository: Repository }>(
     `query getPost($number: Int!){
-			repository(name: ${process.env.GITHUB_REPO}, owner: ${process.env.GITHUB_USERNAME}) {
+			repository(name: "${process.env.GITHUB_REPO}", owner: "${process.env.GITHUB_USERNAME}") {
         issue(number: $number) {
             title
             number
@@ -55,5 +56,5 @@ export const getPost = async (number: number) => {
 		}`,
     { number: Number(number) }
   );
-  return data.repository.issues;
+  return data.repository.issue;
 };

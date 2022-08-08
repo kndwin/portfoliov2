@@ -16,7 +16,6 @@ type HomeProps = {
 }
 
 export default function Home({ posts }: HomeProps) {
-
   const constraintRef = useRef(null);
 
   return (
