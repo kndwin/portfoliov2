@@ -1,7 +1,7 @@
 import React from "react";
 import { styled, keyframes, CSS } from "stitches.config";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
-import { Box, panelStyles } from "common/ui";
+import { Box } from "common/ui";
 
 const slideUpAndFade = keyframes({
   "0%": { opacity: 0, transform: "translateY(2px)" },
@@ -30,7 +30,7 @@ export function Root({ children, ...props }: PopoverProps) {
   return <PopoverPrimitive.Root {...props}>{children}</PopoverPrimitive.Root>;
 }
 
-const StyledContent = styled(PopoverPrimitive.Content, panelStyles, {
+const StyledContent = styled(PopoverPrimitive.Content, {
 	display: "flex", 
 	fd: "column", 
   animationDuration: "800ms",

@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, RefObject } from "react";
 import {
   BookmarkIcon,
   Cross1Icon,
@@ -17,67 +17,67 @@ import type { PostDisplay } from "modules/posts/types";
 
 import * as Popover from "common/ui/overlay/Popover/Popover";
 import * as ScrollArea from "common/ui/overlay/ScrollArea/ScrollArea";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 
 export type PostsProps = {
   posts: PostDisplay[];
 };
 
-export const Posts = forwardRef<HTMLElement>(
-  ({ posts }: PostsProps, ref) => {
-    const [openPost, setOpenPost] = useState<Record<number, boolean>>(
-      posts.reduce((prev, curr) => ({ ...prev, [curr.id]: false }), {})
-    );
+export const Posts = forwardRef<HTMLElement, PostsProps>(({ posts }, ref) => {
+  const [openPost, setOpenPost] = useState<Record<number, boolean>>(
+    posts.reduce((prev, curr) => ({ ...prev, [curr.id as number]: false }), {})
+  );
 
-    const onPostOpen = ({ id }: { id: number }) => {
-      setOpenPost((prev) => ({ ...prev, [id]: true }));
-    };
+  const onPostOpen = ({ id }: { id: number }) => {
+    setOpenPost((prev) => ({ ...prev, [id]: true }));
+  };
 
-    const onPostClose = ({ id }: { id: number }) => {
-      setOpenPost((prev) => ({ ...prev, [id]: false }));
-    };
+  const onPostClose = ({ id }: { id: number }) => {
+    setOpenPost((prev) => ({ ...prev, [id]: false }));
+  };
 
-    return (
-      <Popover.Root>
-        <Popover.Trigger asChild>
-          <StyledIconButton>
-            <BookmarkIcon />
-          </StyledIconButton>
-        </Popover.Trigger>
-        <StyledContent>
-          {posts.map((p: PostDisplay) => (
-            <StyledPostItem
-              key={`item-${p.id}`}
-              onClick={() => onPostOpen({ id: p.id })}
-            >
-              {p.title}
-            </StyledPostItem>
-          ))}
-        </StyledContent>
-        {posts.map(
-          (p: PostDisplay) =>
-            Boolean(openPost[p.id]) && (
-              <PostContent
-                key={`post-${p.id}`}
-                post={p}
-                onClose={() => onPostClose({ id: p.id })}
-                ref={ref}
-              />
-            )
-        )}
-      </Popover.Root>
-    );
-  }
-);
+  return (
+    <Popover.Root>
+      <Popover.Trigger asChild>
+        <StyledIconButton>
+          <BookmarkIcon />
+        </StyledIconButton>
+      </Popover.Trigger>
+      <StyledContent>
+        {posts.map((p: PostDisplay) => (
+          <StyledPostItem
+            key={`item-${p.id}`}
+            onClick={() => onPostOpen({ id: p.id as number })}
+          >
+            {p.title}
+          </StyledPostItem>
+        ))}
+      </StyledContent>
+      {posts.map((post: PostDisplay) => {
+        const id = post.id as number;
+        if (Boolean(openPost[id])) {
+          return (
+            <PostContent
+              key={`post-${id}`}
+              post={post}
+              onClose={() => onPostClose({ id })}
+              ref={ref}
+            />
+          );
+        }
+      })}
+    </Popover.Root>
+  );
+});
 
 type PostContentProps = {
   onClose: () => void;
   post: PostDisplay;
 };
 
-const PostContent = forwardRef<HTMLDivElement>(
-  ({ onClose, post }: PostContentProps, ref) => {
-		const router = useRouter()
+const PostContent = forwardRef<HTMLElement, PostContentProps>(
+  ({ onClose, post }, ref) => {
+    const router = useRouter();
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     const onToggleFullscreen = () => {
@@ -86,7 +86,7 @@ const PostContent = forwardRef<HTMLDivElement>(
     };
 
     const onLinkClick = () => {
-			router.push(`/post/${post.id}`)
+      router.push(`/post/${post.id}`);
     };
 
     return (
@@ -95,7 +95,7 @@ const PostContent = forwardRef<HTMLDivElement>(
         drag={!isFullscreen}
         style={isFullscreen ? fullscreenCss : normalScreenCss}
         dragMomentum={false}
-        dragConstraints={ref}
+				dragConstraints={ref as RefObject<HTMLElement>}
       >
         <StyledPostHeader>
           <StyledPostTitle b size="6">
@@ -122,7 +122,7 @@ const PostContent = forwardRef<HTMLDivElement>(
           <ScrollArea.Viewport>
             <StyledPost>
               <Box css={{ mx: "auto", maw: "70em" }}>
-                <PostMarkdown content={post.body} />
+                <PostMarkdown content={post.body as string} />
               </Box>
             </StyledPost>
           </ScrollArea.Viewport>

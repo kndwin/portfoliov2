@@ -37,8 +37,8 @@ type GLTFResult = GLTF & {
 };
 
 export function FaceModel(props: JSX.IntrinsicElements["group"]) {
-  const group = useRef<THREE.Group>();
-  const { nodes, materials } = useGLTF("/kevin.glb") as GLTFResult;
+  const group = useRef<THREE.Group>(null);
+  const { nodes, materials } = useGLTF("/kevin.glb") as unknown as GLTFResult;
 
   const { x, y } = useMousePosition();
   const { camera } = useThree();
