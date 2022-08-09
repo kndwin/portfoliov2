@@ -62,5 +62,6 @@ export async function getStaticProps() {
     props: {
       posts,
     },
+		revalidate: 60 * 60 * 3 // Every 3 hours
   }
 }
