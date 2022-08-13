@@ -17,7 +17,9 @@ export const Post = (props: PostProps) => {
         <IconButtonBackHome />
         <IconButtonDarkMode />
       </StyledHeader>
-      <StyledPostTitle size="9">{props.post.title as string}</StyledPostTitle>
+			<StyledPostTitle as="h1" size="9" css={{ fw: 900, mt: "$3", mb: "$6" }}>
+        {props.post.title as string}
+      </StyledPostTitle>
       <PostMarkdown content={props.post.body as string} />
     </StyledPage>
   );
@@ -44,11 +46,6 @@ const StyledPostTitle = styled(Text, {
   textFillColor: "transparent",
   "-webkit-background-clip": "text",
   "-webkit-text-fill-color": "transparent",
-  fw: 900,
-  mx: "auto",
-  w: "fit-content",
-  mt: "$3",
-  mb: "$7",
 });
 
 const StyledPage = styled(Box, {

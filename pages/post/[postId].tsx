@@ -13,8 +13,9 @@ export default function PostPage(props: PostProps) {
 
 export async function getStaticPaths() {
   const posts: PostDisplay[] = await getPosts();
-  const paths = posts.map((post) => ({ params: { postId: `${post.id}` } }));
-  console.log({ paths: JSON.stringify(paths, null, 2) });
+  const paths = posts
+    .filter((post) => post?.labels?.includes("published"))
+    .map((post) => ({ params: { postId: `${post.id}` } }));
 
   return {
     paths,
@@ -25,6 +26,5 @@ export async function getStaticPaths() {
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const id = Number(ctx.params?.postId);
   const post = await getPost(id);
-  console.log({ post: JSON.stringify(post, null, 2) });
-  return { props: { post }, revalidate: 60 * 60 * 3  };
+  return { props: { post }, revalidate: 60 * 60 * 3 };
 };

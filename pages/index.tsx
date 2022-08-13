@@ -6,14 +6,14 @@ import { styled } from "stitches.config";
 import { Box } from "common/ui";
 
 import { getPosts, getPost } from "modules/posts/utils";
-import type { PostDisplay } from 'modules/posts/types'
+import type { PostDisplay } from "modules/posts/types";
 import { CanvasFaceModel } from "modules/home/Canvas";
 import { Settings } from "modules/home/Settings";
 import { Posts } from "modules/home/Posts";
 
 type HomeProps = {
-	posts: PostDisplay[]
-}
+  posts: PostDisplay[];
+};
 
 export default function Home({ posts }: HomeProps) {
   const constraintRef = useRef(null);
@@ -57,11 +57,11 @@ const Overlay = styled(
 );
 
 export async function getStaticProps() {
-	const posts: PostDisplay[] = await getPosts()
+  const posts: PostDisplay[] = await getPosts();
   return {
     props: {
-      posts,
+      posts: posts.filter((post) => post?.labels?.includes("published")),
     },
-		revalidate: 60 * 60 * 3 // Every 3 hours
-  }
+    revalidate: 60 * 60 * 3, // Every 3 hours
+  };
 }

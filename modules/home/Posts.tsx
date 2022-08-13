@@ -93,9 +93,9 @@ const PostContent = forwardRef<HTMLElement, PostContentProps>(
       <StyledPostBorder
         as={isFullscreen ? "div" : motion.div}
         drag={!isFullscreen}
-        style={isFullscreen ? fullscreenCss : normalScreenCss}
+        css={isFullscreen ? fullscreenCss : normalScreenCss}
         dragMomentum={false}
-				dragConstraints={ref as RefObject<HTMLElement>}
+        dragConstraints={ref as RefObject<HTMLElement>}
       >
         <StyledPostHeader>
           <StyledPostTitle b size="6">
@@ -103,9 +103,11 @@ const PostContent = forwardRef<HTMLElement, PostContentProps>(
           </StyledPostTitle>
 
           <Box css={{ d: "flex", gap: "$3", ai: "center" }}>
-            <IconButton onClick={onLinkClick}>
-              <Link2Icon />
-            </IconButton>
+            <a href={`/post/${post.id}`} target="_blank">
+              <IconButton >
+                <Link2Icon />
+              </IconButton>
+            </a>
 
             <IconButton onClick={onToggleFullscreen}>
               {isFullscreen ? <ExitFullScreenIcon /> : <EnterFullScreenIcon />}
@@ -141,27 +143,29 @@ const fullscreenCss = {
   maxWidth: "calc(100vw - 2em)",
   height: "calc(100vh - 2em)",
   maxHeight: "calc(100vh - 2em)",
-  position: "fixed",
   top: "1em",
   left: "1em",
   transform: "none",
 };
 
 const normalScreenCss = {
+  h: "80vh",
+  pb: "50px",
+  w: "calc(100% - 2 * $3)",
   left: "calc(50% - 35ch)",
-  top: "calc(50% - 10vh)",
+  top: "5em",
 };
 
 const fullscreenCssScroll = {
   width: "calc(100vw - 2em - 4px)",
   maxWidth: "calc(100vw - 2em - 4px)",
-  height: "calc(100vh - 2em - 3em)",
-  maxHeight: "calc(100vh - 2em - 3em)",
+  height: "100%",
+  maxHeight: "calc(100vh - 5em)",
 };
 
 const normalScreenCssScroll = {
-  width: "calc(70ch - 4px)",
-  height: "calc(80vh - 3em)",
+  height: "100%",
+  maxHeight: "100%",
 };
 const StyledPostTitle = styled(Text, {
   background: "linear-gradient(120deg, $plum10, $gold11)",
@@ -197,12 +201,9 @@ const StyledPostBorder = styled(motion.div, {
   p: "3px",
   zIndex: "1",
   br: "$3",
-  left: "calc(50% - 35ch)",
   top: "10vh",
   maw: "70ch",
   mah: "80vh",
-  h: "fit-content",
-  w: "calc(100% - 2 * $3)",
   overflowY: "hidden",
 });
 

@@ -13,12 +13,12 @@ export const PostMarkdown = (props: PostMarkdownProps) => {
       children={props.content}
       components={{
         h1: (node) => (
-          <Text size="7" css={{ fw: "bold" }}>
+					<Text size="7" css={{ fw: "bold", mb: "$3", mt: "$2" }}>
             {node.children}
           </Text>
         ),
         h2: (node) => (
-          <Text size="6" css={{ fw: "bold" }}>
+          <Text size="6" css={{ fw: "bold", mb: "$2", mt: "$1" }}>
             {node.children}
           </Text>
         ),
@@ -43,12 +43,12 @@ export const PostMarkdown = (props: PostMarkdownProps) => {
           </Text>
         ),
         p: (node) => (
-          <Text size="4" css={{ lh: "1.1em" }}>
+          <Text size="4" css={{ lh: "1.2em" }}>
             {node.children}
           </Text>
         ),
         li: (node) => (
-          <Text as="li" size="2" css={{ d: "list-item" }}>
+					<Text as="li" size="4" css={{ d: "list-item", lh: "1.2em" }}>
             {node.children}
           </Text>
         ),
