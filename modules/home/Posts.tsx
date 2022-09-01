@@ -217,7 +217,6 @@ const StyledPostItem = styled(Box, {
 	ai: "center", 
   br: "$2",
   p: "$3",
-  d: "flex",
   gap: "$2",
   maw: "45ch",
   w: "100%",
