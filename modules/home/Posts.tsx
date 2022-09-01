@@ -44,12 +44,15 @@ export const Posts = forwardRef<HTMLElement, PostsProps>(({ posts }, ref) => {
         </StyledIconButton>
       </Popover.Trigger>
       <StyledContent>
-        {posts.map((p: PostDisplay) => (
+        {posts.map((post: PostDisplay) => (
           <StyledPostItem
-            key={`item-${p.id}`}
-            onClick={() => onPostOpen({ id: p.id as number })}
+            key={`item-${post.id}`}
+            onClick={() => onPostOpen({ id: post.id as number })}
           >
-            {p.title}
+            <StyledTag>
+              {new Date(`${post?.createdAt}`).toLocaleDateString()}
+            </StyledTag>
+            <Text>{post.title}</Text>
           </StyledPostItem>
         ))}
       </StyledContent>
@@ -82,12 +85,9 @@ const PostContent = forwardRef<HTMLElement, PostContentProps>(
 
     const onToggleFullscreen = () => {
       setIsFullscreen(!isFullscreen);
-      console.log({ post });
     };
 
-    const onLinkClick = () => {
-      router.push(`/post/${post.id}`);
-    };
+    const postDate = new Date(`${post?.createdAt}`);
 
     return (
       <StyledPostBorder
@@ -98,16 +98,15 @@ const PostContent = forwardRef<HTMLElement, PostContentProps>(
         dragConstraints={ref as RefObject<HTMLElement>}
       >
         <StyledPostHeader>
+          <StyledTag>{postDate.toLocaleDateString()}</StyledTag>
           <StyledPostTitle b size="6">
             {post.title}
           </StyledPostTitle>
 
           <Box css={{ d: "flex", gap: "$3", ai: "center" }}>
-            <a href={`/post/${post.id}`} target="_blank">
-              <IconButton >
-                <Link2Icon />
-              </IconButton>
-            </a>
+            <IconButton as="a" href={`/post/${post.id}`} target="_blank">
+              <Link2Icon />
+            </IconButton>
 
             <IconButton onClick={onToggleFullscreen}>
               {isFullscreen ? <ExitFullScreenIcon /> : <EnterFullScreenIcon />}
@@ -122,10 +121,8 @@ const PostContent = forwardRef<HTMLElement, PostContentProps>(
           style={isFullscreen ? fullscreenCssScroll : normalScreenCssScroll}
         >
           <ScrollArea.Viewport>
-            <StyledPost>
-              <Box css={{ mx: "auto", maw: "70em" }}>
-                <PostMarkdown content={post.body as string} />
-              </Box>
+            <StyledPost css={{ maw: isFullscreen ? "60em" : "" }}>
+              <PostMarkdown content={post.body as string} />
             </StyledPost>
           </ScrollArea.Viewport>
           <ScrollArea.Scrollbar orientation="vertical">
@@ -139,21 +136,23 @@ const PostContent = forwardRef<HTMLElement, PostContentProps>(
 );
 
 const fullscreenCss = {
-  width: "calc(100vw - 2em)",
+  width: "100%",
   maxWidth: "calc(100vw - 2em)",
-  height: "calc(100vh - 2em)",
+  height: "100%",
   maxHeight: "calc(100vh - 2em)",
   top: "1em",
   left: "1em",
   transform: "none",
+  pb: "50px",
 };
 
 const normalScreenCss = {
-  h: "80vh",
-  pb: "50px",
+  h: "100%",
+  mah: "80vh",
   w: "calc(100% - 2 * $3)",
   left: "calc(50% - 35ch)",
   top: "5em",
+  pb: "50px",
 };
 
 const fullscreenCssScroll = {
@@ -186,13 +185,16 @@ const StyledPostHeader = styled(Box, {
 
 const StyledPost = styled(Box, {
   pt: "$5",
-  p: "$3",
+  py: "$3",
+  px: "$5",
   d: "flex",
   fd: "column",
   gap: "$2",
   zIndex: "2",
   background: "$slate2",
   br: "$2",
+  mx: "auto",
+  h: "100%",
 });
 
 const StyledPostBorder = styled(motion.div, {
@@ -207,25 +209,27 @@ const StyledPostBorder = styled(motion.div, {
   overflowY: "hidden",
 });
 
-const StyledPostItem = styled(
-  (props: any) => (
-    <Box {...props}>
-      <Text>{props.children}</Text>
-    </Box>
-  ),
-  {
-    background: "$plum1",
-    cursor: "pointer",
-    backgroundImage: "$plum1",
-    br: "$2",
-    p: "$3",
-    d: "flex",
-    gap: "$2",
-    maw: "45ch",
-    w: "100%",
-    transition: "all .1s ease",
-    "&:hover": {
-      background: "$gold3",
-    },
-  }
-);
+const StyledPostItem = styled(Box, {
+  background: "$plum1",
+  cursor: "pointer",
+  backgroundImage: "$plum1",
+	d: "flex",
+	ai: "center", 
+  br: "$2",
+  p: "$3",
+  d: "flex",
+  gap: "$2",
+  maw: "45ch",
+  w: "100%",
+  transition: "all .1s ease",
+  "&:hover": {
+    background: "$gold3",
+  },
+});
+
+const StyledTag = styled(Text, {
+  py: "$1",
+  px: "$2",
+  bc: "$slate1",
+  br: "$2",
+});

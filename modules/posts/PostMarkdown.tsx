@@ -43,7 +43,7 @@ export const PostMarkdown = (props: PostMarkdownProps) => {
           </Text>
         ),
         p: (node) => (
-          <Text size="4" css={{ lh: "1.2em" }}>
+					<Text size="4" css={{ lh: "1.2em", mt: "$4" }}>
             {node.children}
           </Text>
         ),
